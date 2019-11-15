@@ -9,6 +9,9 @@ import './App.css'
 
 
 const useStyles = makeStyles(theme => ({
+  button: {
+    width: '16em'
+  },
   textarea: {
     width: "100%"
   },
@@ -38,28 +41,30 @@ const useStyles = makeStyles(theme => ({
     },
     "& label": {
       display: "none"
-    }
+    },
   }
 }))
 
 function colorWords(text) {
-	let word_matches = []
-	let COLOR
-	text = text.split(' ')
-	text.forEach(word => {
+  let word_matches = []
+  let original = text.split(' ')
+  let lowercase = text.toLowerCase().split(' ')
+	lowercase.forEach(word => {
 		word_matches.forEach(match => {
-			if (match.word == word) return
+      if (match.word === word) return
 		})
-		let pos = words.indexOf(word)
+    let pos = words.indexOf(word)
 		word_matches.push({
-			word,
+			word: original[lowercase.indexOf(word)],
 			pos
 		})
-	})
-	let spans = word_matches.forEach(match => (
-		<span style={{backgroundColor: COLOR}}>{match.word}</span>
-	))
-	return spans
+  })
+	let spans = word_matches.map(match => {
+    if (match.pos === -1) match.pos = 10000
+    let color = `rgba(255, 0, 0, ${match.pos / 10000})`
+		return (<><span style={{backgroundColor: color}}>{match.word}</span><span>&nbsp;</span></>)
+  })
+	return spans || <span>error</span>
 }
 
 function App() {
@@ -72,7 +77,7 @@ function App() {
 		let label = editMode ? 'how simple is it?' : 'edit text'
 		return (
       <Button
-        className={visibility}
+        className={`${classes.visibility} ${classes.button}`}
         variant="outlined"
 				color="primary"
 				onClick={() => setEditMode(!editMode)}
@@ -83,11 +88,14 @@ function App() {
 	}
 
 	function renderTextarea() {
-		let spans
-		let klasses = editMode ? classes.textarea : `${classes.textarea} ${classes.nonEditMode}`
-		if (!editMode) {
-			spans = colorWords(user_text)
-		}
+		let element, klasses
+    if (editMode) {
+      element = 'input'
+      klasses = classes.textarea
+		} else {
+      element = () => colorWords(user_text)
+      klasses = `${classes.textarea} ${classes.nonEditMode}`
+    }
 		return (
       <TextField
         className={klasses}
@@ -99,8 +107,15 @@ function App() {
 				value={user_text}
 				disabled={!editMode}
         onChange={e => setUserText(e.target.value)}
+        InputProps={{
+          inputComponent: element,
+          style: {
+            display: 'flex',
+            flexWrap: 'wrap',
+          },
+        }}
       />
-    );
+    )
 	}
 
 	return (
