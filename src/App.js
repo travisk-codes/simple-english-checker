@@ -76,7 +76,7 @@ function App() {
 		let label = editMode ? 'how simple is it?' : 'edit text'
 		return (
       <Button
-        className={`${classes.visibility} ${classes.button}`}
+        className={`${visibility} ${classes.button}`}
         variant="outlined"
 				color="primary"
 				onClick={() => setEditMode(!editMode)}
