@@ -46,22 +46,21 @@ const useStyles = makeStyles(theme => ({
 }))
 
 function colorWords(text) {
-  let word_matches = []
-  let original = text.split(' ')
-  let lowercase = text.toLowerCase().split(' ')
-	lowercase.forEach(word => {
+	let word_matches = []
+  text = text.split(' ')
+	text.forEach(word => {
 		word_matches.forEach(match => {
       if (match.word === word) return
 		})
-    let pos = words.indexOf(word)
+    let pos = words.indexOf(word.toLowerCase().replace(/[^a-zA-Z0-9]/, ''))
 		word_matches.push({
-			word: original[lowercase.indexOf(word)],
+			word,
 			pos
 		})
   })
 	let spans = word_matches.map(match => {
     if (match.pos === -1) match.pos = 10000
-    let color = `rgba(255, 0, 0, ${match.pos / 10000})`
+    let color = `hsla(${match.pos / 10000 * 18}, 100%, 50%, ${match.pos / 10000})`
 		return (<><span style={{backgroundColor: color}}>{match.word}</span><span>&nbsp;</span></>)
   })
 	return spans || <span>error</span>
@@ -121,7 +120,7 @@ function App() {
 	return (
 		<div className={classes.app}>
 			<div className={classes.titleAndBtn}>
-				<span className={classes.title}>Simple English Checker</span>
+  <span className={classes.title}>{colorWords('Simple English Checker')}</span>
 				{renderButton()}
 			</div>
 			{renderTextarea()}
