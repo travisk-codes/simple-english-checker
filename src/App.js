@@ -14,6 +14,9 @@ const useStyles = makeStyles(theme => ({
 	textarea: {
 		marginTop: '24px',
 		width: '100%',
+		'& div': {
+			outline: 'none',
+		},
 	},
 	titleAndBtn: {
 		display: 'flex',
@@ -21,7 +24,6 @@ const useStyles = makeStyles(theme => ({
 		flexDirection: 'row',
 		justifyContent: 'space-between',
 		marginTop: '24px',
-		height: '36px',
 		alignItems: 'center',
 	},
 	app: {
